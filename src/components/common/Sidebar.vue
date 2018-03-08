@@ -21,22 +21,22 @@
                 items: [
                     {
                         icon: 'el-icon-document',
-                        index: 'readme',
+                        index: 'projectList',
                         title: '项目列表'
                     },
                     {
                         icon: 'el-icon-menu',
-                        index: 'basecharts',
+                        index: 'industryList',
                         title: '行业列表'
                     },
                     {
                         icon: 'el-icon-star-on',
-                        index: 'drag',
-                        title: '投票区'
+                        index: 'votingList',
+                        title: '投票列表'
                     },
                     {
                         icon: 'el-icon-star-on',
-                        index: 'tab',
+                        index: 'tagManagement',
                         title: '标签管理'
                     },
                 ]

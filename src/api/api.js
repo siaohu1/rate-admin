@@ -7,12 +7,17 @@ const instance = axios.create({
         'Content-Type': 'application/x-www-form-urlencoded'
     },
     transformRequest: [function (data, headers) {
-        // Do whatever you want to transform the data
 
         return qs.stringify({
             ...data,
             sys: 'admin',
-            token: localStorage.token
+            token: 'tgkGGr9lWkPJqL4yJaLQwekJclOuM6O+lACXInVouRpra5t0WWPInIZjzeybmANo',
+            systemVersion:7,
+            pVersion:1,
+            version:1,
+            system:'win',
+            channel : 1,
+            mobileInfo:'rate-admin',
         })
     }]
 })
@@ -26,8 +31,8 @@ instance.interceptors.response.use(res => { // 拦截请求后的状态
 })
 
 //评级项目列表
-export const projectList = parmas => {
-    return instance.post('/rate/admin/project_list',parmas)
+export const projectList = params => {
+    return instance.post('/rate/admin/project_list',params)
 }
 //评级项目新增
 export const addProject = params => {
@@ -56,4 +61,40 @@ export const deleteClassSecond = id => {
 //下架/归档项目
 export const adultList = id => {
     return instance.post('/rate/admin/offProject', id)
+}
+//新建标签
+export const addTag = params => {
+    return instance.post('/admin/tag/add',params)
+}
+//查询标签列表
+export const getTagList = () => {
+    return instance.post('/admin/tag/list')
+}
+//点击标签获取币列表
+export const getTagIcoList = params => {
+    return instance.post('/admin/coin/all_coins_by_tagid',params)
+}
+//查询一级行业列表
+export const getFristIndustryList = () => {
+    return instance.post('/admin/class/look_first')
+}
+//新建一级行业列表
+export const addFristIndustryList = params => {
+    return instance.post('/admin/class/add_first',params)
+}
+//删除行业列表
+export const removeIndustry = params => {
+    return instance.post('admin/class/del',params)
+}
+//查看二级行业列表
+export const getSecondIndustryList = params => {
+    return instance.post('/admin/class/look_second',params)
+}
+//新建二级行业列表
+export const addSecondIndustryList = params => {
+    return instance.post('/admin/class/add_second',params)
+}
+//点击二级行业查看对应币列表
+export const getSecondIcoList = params => {
+    return instance.post('/admin/class/look_project',params)
 }

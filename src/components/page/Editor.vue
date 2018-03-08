@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="header">
-            <div class="logo">后台管理系统</div>
+            <div class="logo">rate-admin</div>
             <div class="user-info">
                 <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -14,22 +14,20 @@
                 </el-dropdown>
             </div>
         </div>
-        <div class="fanhui" @click='goBack'><i class="el-icon-arrow-left
-"></i></div>
+        <div class="fanhui"><i class="el-icon-arrow-left
+" @click='goBack'></i><span style="font-size: 20px;margin-left: 35%">新增项目</span></div>
         <el-row :gutter="20" style="overflow: auto">
-
-            <el-col :span="16" style="border:1px solid #ccc;margin:3% 10%;overflow: auto">
+            <el-col :span="16" style="border:1px solid #ccc;margin:2% 10% 2% 18%;overflow: auto;padding: 2% 5%;">
+                图片上传
                 <el-upload
-
-                    action="https://wd6758545005srbqnl.wilddogio.com/imglist"
-                    list-type="picture-card"
-                    :on-preview="handlePictureCardPreview">
-                    <i class="el-icon-plus"></i>
+                    class="upload-demo"
+                    drag
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    multiple>
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
-                <span >上传logo<br>只能上传JPG / PNG文件，且不超过500KB</span>
                 <el-form ref="form" style="margin:20px 10px;" :label-position="labelPosition">
 
                     <el-form-item label="项目名称">
@@ -45,9 +43,9 @@
                     <el-form-item label="ICO 时间">
                         <el-col :span="10">
                             <el-date-picker
-                                v-model="icotime"
-                                type="datetime"
-                                placeholder="选择日期时间">
+                                v-model="value1"
+                                type="date"
+                                placeholder="选择日期">
                             </el-date-picker>
                         </el-col>
                     </el-form-item>
@@ -55,18 +53,17 @@
                         <el-select size="small" style="width: 100px;margin-left:1%;"
                                    v-model="selectlevelone"
                                    placeholder="请选择"
-                                   v-on:change="getProv($event)">
+                                   v-on:change="getProv($event)"><!--v-for="item in provs" v-bind:key="item"-->
                             <el-option
-                                v-for="item in provs" v-bind:key="item"
-                                :label="item.label"
-                                :value="item.value">
+                                :label="1"
+                                :value="1">
                             </el-option>
                         </el-select>
                         <el-select size="small" style="width: 100px"
                                    v-if="selectProv!=''"
                                    v-model="selectleveltwo"
-                                   placeholder="请选择行业"
-                                   v-on:change="getCity($event)">
+                                   placeholder="请选择行业">
+                                   <!--v-on:change="getCity($event)"-->
                             <el-option
                                 v-for="item in citys" v-bind:key="item"
                                 :label="item.label"
@@ -112,8 +109,7 @@
                                 closable
                                 :disable-transitions="false"
                                 :type="tag.type"
-                                style="margin:0 8px;"
-                                @close="handleClose(tag)">
+                                style="margin:0 8px;" >
                                 {{tag.name}}
                             </el-tag>
                         </el-col>
@@ -147,7 +143,7 @@
                         <el-button @click="createtextlink">新建</el-button>
                     </el-form-item>
                     <ul class="textlinklist">
-                        <li v-for="(item,items) in textlinks" v-bind:key="items"><span >{{item.textlinkname}}</span><span style="width:20%;">http://{{item.textlinkaddress}}</span>
+                        <li><span >1</span><span style="width:20%;">http://2</span>
                             <el-button @click="removetextlink(index)" size="small">删除</el-button>
                         </li>
                     </ul>
@@ -177,16 +173,16 @@
                         </el-col>
                     </el-form-item>
                     <ul class="iconlinklist">
-                        <li v-for="(item,items) in iconlinks" v-bind:key="items"><span >{{item.selecticon}}</span><span style="width:20%;">{{item.selecttype}}</span><span style="width:20%;">{{item.selectcontent}}</span>
+                        <li ><span >1</span><span style="width:20%;">1</span><span style="width:20%;">1</span>
                             <el-button @click="removeiconlink(index)" size="small">删除</el-button>
                         </li>
                     </ul>
                     <hr >
                     <br><br>
-                    <el-form-itme style="margin-left:30%;">
+                    <el-form-item style="margin-left:35%;">
                         <el-button @click="savedraft()">保存草稿</el-button>
                         <el-button @click="savepublish()">保存发布</el-button>
-                    </el-form-itme>
+                    </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
@@ -198,6 +194,7 @@
 
         data() {
             return {
+                value1:'',
                 dialogImageUrl:'',
                 programName:'',
                 icocost:'',
@@ -276,8 +273,18 @@
             }
         },
         methods:{
+            jumptabok(){
+                this.$router.push('/tagManagement');
+            },
+            addtab(){
 
+            },
+            createtextlink(){
 
+            },
+            addiconlink(){
+
+            },
             handleCommand(command) {
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
@@ -447,7 +454,7 @@
         font-size: 30px;
         font-weight: bold;
         cursor: pointer;
-        padding: 10px 0 0 20px;
+        padding: 10px 0 0 17%;
     }
     /* 页面样式 */
     .createitem{width:50%;border: 1px solid #ccc;padding: 20px 30px;}

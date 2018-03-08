@@ -11,30 +11,30 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/readme',
+            path: '/projectList',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
                     path: '/',
-                    component: resolve => require(['../components/page/Readme.vue'], resolve)
+                    component: resolve => require(['../components/page/ProjectList.vue'], resolve)
                 },
                 {
-                    path: '/basecharts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-schart组件
+                    path: '/industryList',
+                    component: resolve => require(['../components/page/IndustryList.vue'], resolve)   //
                 },
                 {
-                    path: '/drag',
-                    component: resolve => require(['../components/page/DragList.vue'], resolve)    // 拖拽列表组件
+                    path: '/votingList',
+                    component: resolve => require(['../components/page/VotingList.vue'], resolve)
                 },
                 {
-                    path: '/tab',
-                    component: resolve => require(['../components/page/Tab.vue'], resolve)
+                    path: '/tagManagement',
+                    component: resolve => require(['../components/page/TagManagement.vue'], resolve)
                 },
             ]
         },
         {
-            path: '/bianji',
-            component: resolve => require(['../components/page/Bianji.vue'],resolve)
+            path: '/editor',
+            component: resolve => require(['../components/page/Editor.vue'],resolve)
         },
         {
             path: '/vote',
