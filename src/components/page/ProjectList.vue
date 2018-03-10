@@ -99,7 +99,7 @@
             }
         },
         mounted(){
-            // this.getProjectList();
+            this.getProjectList();
         },
         methods:{
             getProjectList(pageIndex=1){
@@ -109,6 +109,8 @@
                     pageSize:10,
                 }).then(data=>{
                     console.log(data)
+                    this.projectLists = data.project_list
+                    console.log(this.projectLists)
                 })
 
             }

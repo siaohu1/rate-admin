@@ -43,8 +43,6 @@
     </div>
 </template>
 <script>
-    import Vue from 'vue';
-import axios from "axios"
     export default {
         data(){
             return {
@@ -52,20 +50,8 @@ import axios from "axios"
                 dialogImageUrl:''
             }
         },
-        mounted:function(){
-            let wilddogApp = wilddog.initializeApp({
-                syncURL: 'https://wd6758545005srbqnl.wilddogio.com'
-            })
-            let sync = wilddogApp.sync()
-            let ref = sync.ref();
-            let additem = new Vue({
-                el: '',
-                wilddog: {
-                    anArray: sync.ref("/votelist")
-                }
-            })
-            this.additem = additem;
-            console.log(additem)
+        mounted(){
+
 
         },
         created(){
@@ -76,28 +62,7 @@ import axios from "axios"
                     this.$router.go(-1);
             },
             //新建投票项目
-            addvoteitem (){
-                let itemname=this.itemname;
-                let dialogImageUrl=this.dialogImageUrl;
-                axios.get('/api/projectPoll/saveProjectPoll',{
-                    params:{
-                        projectName:itemname,
-                        picurl:dialogImageUrl,
-                    }
-                }).then(function(res){
-                    console.log(res.data);
-                })
-            },
-            voteSave(){
-                let itemname = this.itemname;
-                let obj={
-                    votename:itemname
-                };
-                this.additem.$wilddogRefs.anArray.push(obj);
-                alert('新建项目成功！')
-                console.log('添加成功');
-                this.$router.push({path:'/drag'});
-            },
+
         }
     }
 

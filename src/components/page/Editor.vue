@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="fillcontain">
         <div class="header">
             <div class="logo">rate-admin</div>
             <div class="user-info">
@@ -15,121 +15,121 @@
             </div>
         </div>
         <div class="fanhui"><i class="el-icon-arrow-left
-" @click='goBack'></i><span style="font-size: 20px;margin-left: 35%">新增项目</span></div>
-        <el-row :gutter="20" style="overflow: auto">
-            <el-col :span="16" style="border:1px solid #ccc;margin:2% 10% 2% 18%;overflow: auto;padding: 2% 5%;">
-                图片上传
-                <el-upload
-                    class="upload-demo"
-                    drag
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    multiple>
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>
-                <el-form ref="form" style="margin:20px 10px;" :label-position="labelPosition">
-
-                    <el-form-item label="项目名称">
-                        <el-col :span="10">
-                            <el-input v-model="programName"></el-input>
+" @click='goBack'></i><span style="font-size: 20px;margin-left: 33%">新增项目</span></div>
+        <el-row class="rewBox" style="">
+            <el-col :span="24"  v-show="infoCoinShow" >
+                <el-form name="form"  class="formBox">
+                    <!-- <p>币状态：未补全</p> -->
+                    <el-form-item label="币标志">
+                        <el-col :span="7">
+                            <el-input v-model="symbol" :placeholder= symbol></el-input>
                         </el-col>
                     </el-form-item>
-                    <el-form-item label="ICO 成本">
-                        <el-col :span="10">
-                            <el-input v-model="icocost"></el-input>
+                    <el-upload
+                        action="123"
+                        :http-request="requestImg"
+                        class="uploadImg"
+                        :before-upload="beforeAvatarUpload"
+                        enctype="multipart/form-data"
+                        list-type="picture-card">
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog>
+                    <el-form-item label="ICO评级">
+                        <el-col :span="6">
+                            <el-input v-model="grade"></el-input>
                         </el-col>
                     </el-form-item>
-                    <el-form-item label="ICO 时间">
-                        <el-col :span="10">
+                    <el-form-item label="ICO成本">
+                        <el-col :span="6">
+                            <el-input v-model="icoCost"></el-input>
+                        </el-col>
+                    </el-form-item>
+                    <el-form-item label="ICO时间" >
+                        <el-col :span="6">
                             <el-date-picker
-                                v-model="value1"
-                                type="date"
+                                v-model="datatime"
+                                type="datetime"
+                                format="yyyy-MM-dd HH:mm:ss"
                                 placeholder="选择日期">
                             </el-date-picker>
                         </el-col>
                     </el-form-item>
-                    <el-form-item label="选择行业">
-                        <el-select size="small" style="width: 100px;margin-left:1%;"
-                                   v-model="selectlevelone"
-                                   placeholder="请选择"
-                                   v-on:change="getProv($event)"><!--v-for="item in provs" v-bind:key="item"-->
-                            <el-option
-                                :label="1"
-                                :value="1">
-                            </el-option>
-                        </el-select>
-                        <el-select size="small" style="width: 100px"
-                                   v-if="selectProv!=''"
-                                   v-model="selectleveltwo"
-                                   placeholder="请选择行业">
-                                   <!--v-on:change="getCity($event)"-->
-                            <el-option
-                                v-for="item in citys" v-bind:key="item"
-                                :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
-                        <el-button  size="small" @click="jumptrade =true">编辑行业</el-button>
+                    <!--<hr>-->
+
+                    <el-form-item label="所属行业">
+                        <el-cascader
+                            placeholder="试试搜索"
+                            :options="options"
+                            filterable
+                            @change="fristList"
+                            change-on-select
+                        ></el-cascader>
+                        <el-button size="small" @click="jumpindustrypage = true">编辑行业</el-button>
                         <el-dialog
                             title="提示"
-                            :visible.sync="jumptrade"
+                            :visible.sync="jumpindustrypage"
                             width="30%"
-                        >
-                            <span>是否跳转到编辑行业页面?</span>
+                            :before-close="handleClose">
+                            <span>是否跳转到行业列表页面</span>
                             <span slot="footer" class="dialog-footer">
-                                    <el-button @click="jumptrade = false">取 消</el-button>
-                                    <el-button type="primary" @click="jumptrade = false,jumptradeok() " >确 定</el-button>
-                                </span>
+                        <el-button @click="jumpindustrypage = false">取 消</el-button>
+                        <el-button type="primary" @click="jumpindustrypage = false,jumpIndustryPage()">确 定</el-button>
+                        </span>
                         </el-dialog>
                     </el-form-item>
                     <el-form-item label="添加标签">
-                        <el-col :span="10">
-                            <el-input style="position: relative;" v-model="sreachtab"></el-input>
-                            <el-button style="position: absolute;top:0px;left:42%; " @click="addtab">添加</el-button>
-                            <el-button  size="small" style="margin-left:-1px;" @click="jumptab=true">搜索不到，请新增标签</el-button>
-                            <el-dialog
-                                title="提示"
-                                :visible.sync="jumptab"
-                                width="30%"
-                            >
-                                <span>是否跳转到标签列表页面</span>
-                                <span slot="footer" class="dialog-footer">
-                                    <el-button @click="jumptab = false">取 消</el-button>
-                                    <el-button type="primary" @click="jumptab = false,jumptabok() " >确 定</el-button>
-                                </span>
-                            </el-dialog>
-                        </el-col>
+                        <el-autocomplete
+                            v-model="sreachtag"
+                            :fetch-suggestions="querySearchAsync"
+                            placeholder="请输入内容"
+                            @select="handleSelect"
+                        ></el-autocomplete>
+                        <el-button    @click="jumptag=true">搜索不到，请新增标签</el-button>
+                        <el-dialog
+                            title="提示"
+                            :visible.sync="jumptag"
+                            width="30%"
+                            :before-close="handleClose">
+                            <span>是否跳转到标签列表页面</span>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="jumptag = false">取 消</el-button>
+                                <el-button type="primary" @click="jumptag = false,jumpTagPage()">确 定</el-button>
+                            </span>
+                        </el-dialog>
                     </el-form-item>
                     <el-form-item label="已有标签">
-                        <el-col :span="10" style="border:1px solid #bfcbd9;height:100px;margin-left:6px;border-radius:5px;">
+                        <el-col :span="10" class="tags">
                             <el-tag
                                 v-for="tag in tags"
                                 :key="tag.name"
                                 closable
                                 :disable-transitions="false"
                                 :type="tag.type"
-                                style="margin:0 8px;" >
+                                :style="{color:tag.tag_color,backgroundColor:tag.tag_bg_color}"
+                                @close="handleClose(tag)">
                                 {{tag.name}}
                             </el-tag>
                         </el-col>
                     </el-form-item>
+                    <!--<hr>-->
                     <el-form-item label="项目介绍">
                         <el-col :span="10">
-                            <el-input type="textarea" v-model="itemintroduce" ></el-input>
+                            <el-input type="textarea"  v-model="desc"></el-input>
                         </el-col>
                     </el-form-item>
+                    <!--<hr>-->
                     <el-form-item label="官网链接">
                         <el-col :span="10">
-                            <el-input placeholder="请输入链接" v-model="officelink" >
-                                <template slot="prepend" >Http://</template>
+                            <el-input placeholder="请输入链接" v-model="url">
                             </el-input>
                         </el-col>
                     </el-form-item>
                     <el-form-item label="白皮书">
                         <el-col :span="10">
-                            <el-input style="margin-left:3%;" placeholder="请输入链接" v-model="whitebooklink">
-                                <template slot="prepend">Http://</template>
+                            <el-input placeholder="请输入链接" v-model="bookUrl">
                             </el-input>
                         </el-col>
                     </el-form-item>
@@ -143,45 +143,52 @@
                         <el-button @click="createtextlink">新建</el-button>
                     </el-form-item>
                     <ul class="textlinklist">
-                        <li><span >1</span><span style="width:20%;">http://2</span>
+                        <li v-for="(item,index) in textlinks" :key="index.id"><span >{{item.textlinkname}}</span><span>{{item.textlinkaddress}}</span>
                             <el-button @click="removetextlink(index)" size="small">删除</el-button>
                         </li>
                     </ul>
-                    <!-- <el-form-item>
-                       <el-button @click="adminiconLink" style="margin-left:9%;">管理图标链接</el-button>
-                        <el-button @click="addiconlink" style="margin-left:9%;">新增图标链接</el-button>
-                   </el-form-item> -->
-                    <el-form-item style="margin-left:13%;">
-                        <el-button>管理图标链接</el-button>
+                    <el-form-item >
+                        <el-button   @click="jumpicopage=true">管理图标链接</el-button>
+                        <el-dialog
+                            title="提示"
+                            :visible.sync="jumpicopage"
+                            width="30%"
+                            :before-close="handleClose">
+                            <span>是否跳转到标签列表页面</span>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="jumpicopage = false">取 消</el-button>
+                                <el-button type="primary" @click="jumpicopage = false,jumpIcoLinkPage()">确 定</el-button>
+                            </span>
+                        </el-dialog>
                         <el-button @click="addiconlink">新增图标链接</el-button>
                     </el-form-item>
                     <el-form-item label="图标下拉框">
                         <el-col :span="4">
-                            <el-select v-model="selecticon" placeholder="选择图标" style="display:inline-block;">
-                                <el-option label="微信" value="wechat"></el-option>
-                                <el-option label="微博" value="weibo"></el-option>
+                            <el-select v-model="selecticon" placeholder="选择图标">
+                                <el-option v-for="(item,items) in icondata" :key="items" :label="item.name"  :value="item.name"></el-option>
+
                             </el-select>
                         </el-col>
                         <el-col :span="4">
-                            <el-select v-model="selecttype" placeholder="选择类型" style="display:inline-block;">
+                            <el-select v-model="selecttype" placeholder="选择类型">
                                 <el-option label="链接" value="wechat"></el-option>
                                 <el-option label="图片" value="weibo"></el-option>
+                                <el-option label="弹框" value="tankuang"></el-option>
                             </el-select>
                         </el-col>
                         <el-col :span="4">
-                            <el-input style="position: absolute;width:30%;" v-model="selectcontent" ></el-input>
+                            <el-input  v-model="selectcontent" ></el-input>
                         </el-col>
                     </el-form-item>
                     <ul class="iconlinklist">
-                        <li ><span >1</span><span style="width:20%;">1</span><span style="width:20%;">1</span>
+                        <li v-for="(item,index) in iconlinks" :key="index.id"><span >{{item.selecticon}}</span><span>{{item.selecttype}}</span><span >{{item.selectcontent}}</span>
                             <el-button @click="removeiconlink(index)" size="small">删除</el-button>
                         </li>
                     </ul>
-                    <hr >
-                    <br><br>
-                    <el-form-item style="margin-left:35%;">
-                        <el-button @click="savedraft()">保存草稿</el-button>
-                        <el-button @click="savepublish()">保存发布</el-button>
+                    <hr>
+                    <el-form-item style="padding-left: 30%;padding-top: 1%">
+                        <el-button  @click="saveDraft()">保存草稿</el-button>
+                        <el-button @click="saveRelease()">保存发布</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -189,102 +196,58 @@
 
     </div>
 </template>
-<script>
-    export default {
 
+<script>
+    import axios from 'axios'
+    import {FormatData} from '../../api/datatime.js'
+    import * as api from '../../api/api'
+    var myToken = localStorage.token;
+    export default {
         data() {
             return {
-                value1:'',
-                dialogImageUrl:'',
-                programName:'',
-                icocost:'',
-                icotime:'',
-                selectlevelone:'',
-                selectleveltwo:'',
-                itemintroduce:'',
-                officelink:'',
-                whitebooklink:'',
-                additem:'',
-                //搜索标签
-                sreachtab:'',
-                //跳转编辑行业
-                jumptrade:false,
-                jumptab:false,
-                //新建文字链接
-                textlinks:[],
+                url:'',
+                dialogVisible:false,
+                dialogImageUrl: '',
+                jumpindustrypage: false, //跳转编辑行业
+                imageUrl: '',
+                imgFile:'',
+                icoCost:'',//ico成本
+                bookUrl:'',//白皮书地址
+                symbol:'',//币标志
+                jumptag:false,        //跳转标签
+                jumpicopage:false, //跳转编辑图标
+                textlinks:[],         //新建文字链接
                 textlinkname:'',
                 textlinkaddress:'',
-                //图标链接
-                selecticon:'',
+                selecticon:'',   //图标链接
                 selecttype:'',
                 selectcontent:'',
-                iconlinks:[],
-                labelPosition: 'right',
-                provs:[{label:"北京市",value:"北京市"},
-                    {label:"天津市",value:"天津市"},
-                    {label:"河北省",value:"河北省"},
-                    {label:"山西省",value:"山西省"}] ,
-                citys: [],
-                selectProv: '',
-                selectCity: '',
-                labelPosition: 'right',
-                formLabelAlign: {
-                    name: '',
-                    region: '',
-                    type: ''
-                },
-                dialogImageUrl: '',
-                dialogVisible: false,
-                textarea: '',
-                name: 'linxin',
-                imageUrl: '',
-                form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
-                },
-                icotime: '',
-                value8: '',
-                value9: '',
-                value10:'',
-                value11:'',
-                tags: []
+                iconlinks:[],//图标链接
+                datatime:'',
+                tags: [],//标签
+                tagids:'',//标签id
+                infoCoinShow:true,//默认隐藏右边币详情
+                searchVal:'',//默认输入为空
+                restaurants: [],//搜索标签列表
+                sreachtag: '',//搜索标签的内容
+                timeout:  null,
+                options:[],//行业
+                secondId:'',//行业id
+                desc:'',//币描述
+                icondata:'',//获取到的图标数据
+                currentPage:1,
+                getcurrentPage:'',
+                newCount:'',
+                geticolist:[],
+                indexPrev:1,
+                status:'',
+                // fristData:'',//一级行业
+                secondData:[],//二级行业列表
+                username:'',
+                grade:''
             }
         },
-        mounted(){
-
-        },
-
-        watch:{
-            //搜索tab
-            sreachtab(curVal,oldVal){
-                console.log(oldVal )
-            }
-        },
-        computed:{
-            username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
-            }
-        },
-        methods:{
-            jumptabok(){
-                this.$router.push('/tagManagement');
-            },
-            addtab(){
-
-            },
-            createtextlink(){
-
-            },
-            addiconlink(){
-
-            },
+        methods: {
             handleCommand(command) {
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
@@ -297,123 +260,341 @@
             handleAvatarSuccess(res, file) {
                 this.imageUrl = URL.createObjectURL(file.raw);
             },
-            beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
+            response(){
+                let _th = this;
+                api.getWaitIcoList({ //查询待补全币列表
+                    index:0,
+                    size:20
+                }).then(data =>{
+                    this.geticolist = data.list;
+                })
+                api.getTagList({ //查询标签列表
+                }).then(data =>{
+                    let tagdata = data;
+                    _th.restaurants = tagdata.map(function(item){
+                        return {value:item.tag_name,id:item.id}
+                    })
+                })
+                api.getFristIndustryList({//查询一级行业列表
+                }).then(data =>{
+                    let industrydata = data;
+                    console.log(industrydata)
+                    _th.options = industrydata.map(function(item){
+                        return {value:item.id,label:item.class_name,children:[]}
+                    })
 
-                if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
-                }
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return isJPG && isLt2M;
+                })
+                api.getIconLinkList({//查询图标列表
+                }).then(data =>{
+                    this.icondata = data;
+
+                })
             },
-            onSubmit() {
-                console.log('submit!');
+            getCurrentPage(val){//获取当前页码并调接口
+                api.getWaitIcoList({
+                    index:val,
+                    size:20
+                }).then(data =>{
+                    this.geticolist = data.list;
+                })
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
+            cionInfo(item,index){  //点击编辑右边显示编辑页面
+                let _th = this;
+                this.infoCoinShow = true;
+                this.symbol = item.symbol;
+                _th.indexPrev = index;
+                console.log(this.symbol)
+                console.log(_th.indexPrev)
             },
-            handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
+            fristList(val){//获取二级行业列表
+                api.getSecondIndustryList({
+                    first_id:val[0],
+                }).then(data =>{
+                    let secondIndustry = data;
+                    let a = secondIndustry.map(function(item){
+                        return {value:item.id,label:item.class_name}
+                    })
+                    this.options.children = a;
+                    console.log(  this.options.children)
+                })
             },
-            getProv: function (prov) {
-                let tempCity=[];
-                this.citys=[];
-                this.selectCity='';
-                let allCity=[{
-                    prov: "北京市",
-                    label: "北京市"
-                }, {
-                    prov: "天津市",
-                    label: "天津市"
-                }, {
-                    prov: "河北省",
-                    label: "石家庄市"
-                }, {
-                    prov: "河北省",
-                    label: "唐山市"
-                }, {
-                    prov: "河北省",
-                    label: "秦皇岛市"
-                }, {
-                    prov: "河北省",
-                    label: "邯郸市"
-                }, {
-                    prov: "河北省",
-                    label: "邢台市"
-                }, {
-                    prov: "河北省",
-                    label: "保定市"
-                }, {
-                    prov: "河北省",
-                    label: "张家口市"
-                }, {
-                    prov: "河北省",
-                    label: "承德市"
-                }, {
-                    prov: "河北省",
-                    label: "沧州市"
-                }, {
-                    prov: "河北省",
-                    label: "廊坊市"
-                }, {
-                    prov: "河北省",
-                    label: "衡水市"
-                }, {
-                    prov: "山西省",
-                    label: "太原市"
-                }, {
-                    prov: "山西省",
-                    label: "大同市"
-                }, {
-                    prov: "山西省",
-                    label: "阳泉市"
-                }, {
-                    prov: "山西省",
-                    label: "长治市"
-                }, {
-                    prov: "山西省",
-                    label: "晋城市"
-                }, {
-                    prov: "山西省",
-                    label: "朔州市"
-                }, {
-                    prov: "山西省",
-                    label: "晋中市"
-                }, {
-                    prov: "山西省",
-                    label: "运城市"
-                }, {
-                    prov: "山西省",
-                    label: "忻州市"
-                }, {
-                    prov: "山西省",
-                    label: "临汾市"
-                }, {
-                    prov: "山西省",
-                    label: "吕梁市"
-                }];
-                for (var val of allCity){
-                    if (prov == val.prov){
-                        console.log(val);
-                        tempCity.push({label: val.label, value: val.label})
+            querySearchAsync(queryString, cb) {//搜索标签str
+                var restaurants = this.restaurants;
+                var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    cb(results);
+                }, 3000 * Math.random());
+            },
+            createStateFilter(queryString) {
+                return (state) => {
+                    return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            handleSelect(item) {//搜索标签end
+                console.log(item);
+            },
+            handleSelect(item) {//添加到已有标签
+                let _th = this;
+                _th.tags.push({name:item.value,id:item.id})
+            },
+            beforeAvatarUpload(file) {
+                this.imgFile= file;
+            },
+            requestImg () {   //  上传logo
+                var fileValue = document.querySelector('.el-upload .el-upload__input');
+                var url = "https://bit.macsen318.com/btoken/api/upload";
+                var formData = new FormData();
+                var imgData  = new FormData(fileValue.files[0]);
+                formData.append('file', this.imgFile);
+                formData.append('sys', 'admin')
+                formData.append('token', myToken);
+                var xhr = new XMLHttpRequest()
+                xhr.open('POST', url, true)
+                xhr.send(formData)
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        let responseText  =  xhr.responseText;
+                        var responseData  = JSON.parse(responseText);
+                        this.imageUrl = responseData.data.url;
                     }
                 }
-                this.citys = tempCity;
             },
-            getCity: function (city) {
-                console.log(city);
-                console.log(this.selectCity)
-            }
+            handleClose(tag) {            //删除标签
+                this.tags.splice(this.tags.indexOf(tag), 1);
+            },
+            jumpIndustryPage(){   //跳转编辑行业页面的事件
+                let timedata= FormatData(new Date(this.datatime),"yyyy-MM-dd hh:mm:ss");   //更改时间格式
+                api.saveDraft({
+                    ico_num:this.icoCost,
+                    ico_time:timedata,
+                    logo:this.imageUrl,
+                    symbol:this.symbol
+                }).then(data =>{
+                    if (data.ret == 1) {
+                        alert('保存草稿成功');
+                        this.$router.push({path:'industry'});
+                    }
 
-        }
+                })
+            },
+            jumpTagPage(){//跳转标签页面保存
+                let _th = this;
+                let timedata= FormatData(new Date(this.datatime),"yyyy-MM-dd hh:mm:ss");  //更改时间格式
+                api.saveDraft({
+                    ico_num:this.icoCost,
+                    ico_time:timedata,
+                    logo:this.imageUrl,
+                    symbol:this.symbol,
+                    second_id:this.secondId,
+                }).then(data =>{
+                    if (data.ret == 1) {
+                        alert('保存草稿成功');
+                        this.$router.push({path:'taglist'});
+                    }
+
+                })
+            },
+            jumpIcoLinkPage(){//跳转图标页面保存
+                let tag= [];
+                for (let i = 0; i < _th.tags.length; i++) {
+                    tag.push(_th.tags[i].id);
+                };
+                let tagidlist = tag.join(',');
+                let textlinks =JSON.stringify(this.textlinks);
+                let timedata= FormatData(new Date(this.datatime),"yyyy-MM-dd hh:mm:ss");  //更改时间格式
+                api.saveDraft({
+                    book_url:this.bookUrl,
+                    desc:this.desc,
+                    ext_url_data:textlinks,
+                    ico_num:this.icoCost,
+                    ico_time:timedata,
+                    logo:this.imageUrl,
+                    second_id:this.secondId,
+                    symbol:this.symbol,
+                    tagids:tagidlist,
+                    url:this.url
+                }).then(data =>{
+                    if (data.ret == 1) {
+                        alert('保存草稿成功');
+                        this.$router.push({path:'iconmanage'});
+                    }
+
+                })
+            },
+            createtextlink(){  // 新建文字链接
+                let _th = this;
+                _th.textlinks.push({textlinkname:this.textlinkname,textlinkaddress:this.textlinkaddress});
+                console.log(_th.textlinks)
+            },
+            removetextlink(index){           //    删除文字链接
+                this.textlinks.splice(index,1);
+            },
+            addiconlink(){             //新增图标链接
+                let _th = this;
+                _th.iconlinks.push({selecticon:this.selecticon,selecttype:this.selecttype,selectcontent:this.selectcontent})
+                console.log(_th.iconlinks)
+            },
+            removeiconlink(index){ //    删除文字链接
+                this.iconlinks.splice(index,1);
+            },
+            saveDraft(){//保存草稿
+                let _th = this;
+                let tag= [];
+                for (let i = 0; i < _th.tags.length; i++) {
+                    tag.push(_th.tags[i].id);
+                };
+                //更改时间格式
+                let timedata= FormatData(new Date(this.datatime),"yyyy-MM-dd hh:mm:ss");
+                let tagidlist = tag.join(',');
+                let iconlinks =JSON.stringify(this.iconlinks);
+                let textlinks =JSON.stringify(this.textlinks);
+                api.addProject({
+                    status:0,
+                    //2白皮书地址
+                    whiteBook:this.bookUrl,
+                    //3项目描述
+                    projectDesc:this.desc,
+                    //4图标
+                    iconsLink:iconlinks,
+                    //5文字链接
+                    textLink:textlinks,
+                    //6ico成本
+                    icoCost:this.icoCost,
+                    //7ico时间
+                    icoTime:timedata,
+                    //8币上传logo图片
+                    coinLogo:'www.baidu.com',
+                    //9二级ID
+                    classId:'1',
+                    //10项目名
+                    projectName:this.symbol,
+                    //11标签
+                    tagIds:tagidlist,
+                    //12白皮书地址
+                    officialWebsite:this.url,
+                    //13grade
+                    grade:this.grade
+                }).then(data =>{
+                    if (data.ret == 1) {
+                        alert('保存草稿成功');
+                    }
+
+                })
+            },
+            saveRelease(){//保存发布
+                let _th = this;
+                let tag= [];
+                for (let i = 0; i < _th.tags.length; i++) {
+                    tag.push(_th.tags[i].id);
+                };
+                //更改时间格式
+                let timedata= FormatData(new Date(this.datatime),"yyyy-MM-dd hh:mm:ss");
+                console.log(timedata)
+                let tagidlist = tag.join(',');
+                let iconlinks =JSON.stringify(this.iconlinks);
+                let textlinks =JSON.stringify(this.textlinks);
+                api.addProject({
+                    //1保存
+                    status:1,
+                    //2白皮书地址
+                    whiteBook:this.bookUrl,
+                    //3项目描述
+                    projectDesc:this.desc,
+                    //4图标
+                    iconsLink:iconlinks,
+                    //5文字链接
+                    textLink:textlinks,
+                    //6ico成本
+                    icoCost:this.icoCost,
+                    //7ico时间
+                    icoTime:timedata,
+                    //8币上传logo图片
+                    coinLogo:'www.baidu.com' ,
+                    //9二级ID
+                    classId:111,
+                    //10项目名
+                    projectName:this.symbol,
+                    //11标签
+                    tagIds:tagidlist,
+                    //12白皮书地址
+                    officialWebsite:this.url,
+                    //13grade
+                    grade:this.grade
+                }).then(data =>{
+                    alert('新建成功');
+                }).catch(error=>{
+                    console.log(error)
+                })
+
+            }
+        },
+        mounted:function(){
+            this.response();
+        },
+
     }
 </script>
-<style scoped>
-    /* header样式 */
+
+<style lang="less">
+    /*@import '../../style/mixin';*/
+    .table_container{
+        padding: 20px;
+    }
+    .rewBox{
+        border: 1px solid #ccc;
+        margin: 0 20%;
+    }
+    .formBox{
+        margin: 3%;
+        margin-top: 6%;
+    }
+
+    .uploadImg{float: right;margin-top: -10%;}
+    .tags{border: 1px solid #bfcbd9;width:60%;;height: 80px;border-radius: 5px;}
+    .textlinklist{
+        margin: 2px;
+        li{height: 35px;display: flex;justify-content:space-around;
+            span{padding: 3px;}
+        }
+    }
+    .iconlinklist{
+        margin: 2px;
+        li{height: 35px;display: flex;justify-content:space-around;
+            span{padding: 3px;}
+        }
+    }
+    .coinslist{
+        margin: 3%;
+        /*border: 1px solid #cccccc;*/
+        li{
+            height: 80px;
+            /*border-bottom: 1px solid #cccccc;*/
+            line-height: 80px;
+            span{
+                padding-left: 3%;
+            }
+            ul{
+                display: inline-block;
+                margin :2%;
+                li{height: 20px;
+                    line-height: 20px;
+                    padding: 5px;
+                    border: none;
+                }
+                .rightLi{
+                    float: right;
+                    li{text-align: right;}
+                }
+            }
+        }
+    }
+    .block{
+        margin:3% 12%;
+    }
+    .selectStauts{
+        background-color: rgb(174, 224, 224);
+    }
     .header {
         position: relative;
         box-sizing: border-box;
@@ -445,7 +626,7 @@
     .user-info .user-logo{
         position: absolute;
         left:0;
-        top:15px;
+        top:-20px;
         width:40px;
         height:40px;
         border-radius: 50%;
@@ -454,11 +635,11 @@
         font-size: 30px;
         font-weight: bold;
         cursor: pointer;
-        padding: 10px 0 0 17%;
+        padding: 10px 0 0 20%;
     }
     /* 页面样式 */
-    .createitem{width:50%;border: 1px solid #ccc;padding: 20px 30px;}
-    .textlinklist li{list-style-type: none;margin-left:15%;}
-    .textlinklist li span {border: 1px solid #ccc;height: 28px;}
+    /*.createitem{width:50%;border: 1px solid #ccc;padding: 20px 30px;}*/
+    /*.textlinklist li{list-style-type: none;margin-left:15%;}*/
+    /*.textlinklist li span {border: 1px solid #ccc;height: 28px;}*/
 
 </style>
